@@ -5,9 +5,12 @@ import { Model, Types } from 'mongoose';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { ResponseDto, ResponseStatus } from '../dto/response.dto';
 import { OrderCreatedEvent } from '../events/order-created.event';
-import { OrderDeletedEvent } from '../events/order-deleted.event';
+import { OrderCanceledEvent } from '../events/order-canceled.event';
 import { OrderStatus } from '../schema/order-status';
 import { Order, OrderDocument } from '../schema/order.schema';
+import { PaymentCreatedEvent } from 'src/components/payment/events/payment-created.event';
+import { PaymentUpdatedEvent } from 'src/components/payment/events/payment-updated.event';
+import { PaymentStatus } from 'src/components/payment/schema/payment-status';
 
 @Injectable()
 export class OrderService {
@@ -33,32 +36,58 @@ export class OrderService {
       OrderCreatedEvent.create({
         orderId: id,
         product: createData.product,
+        amount: createData.amount,
         orderStatus: OrderStatus.created
       })
     );
 
-    return { status: ResponseStatus.create };
+    return { id: id, status: ResponseStatus.create };
   }
 
-  async createOrder(data: OrderCreatedEvent): Promise<Order> {
-    return this.orderModel.create({
+  async createOrder(data: OrderCreatedEvent) {
+    await this.orderModel.create({
       _id: data.orderId,
       product: data.product,
+      amount: data.amount,
       status: data.orderStatus
     });
   }
 
-  async deleteOrderEvent(id: string): Promise<ResponseDto> {
+  async cancelOrderEvent(id: string): Promise<ResponseDto> {
     this.client.emit(
-      OrderDeletedEvent.name,
-      OrderDeletedEvent.create({ orderId: id })
+      OrderCanceledEvent.name,
+      OrderCanceledEvent.create({ orderId: id })
     );
 
-    return { status: ResponseStatus.deleted };
+    return { id: id, status: ResponseStatus.canceled };
   }
 
-  async deleteOrder(id: string): Promise<Order> {
-    return this.orderModel.findByIdAndDelete(id);
+  async cancelOrder(id: string) {
+    await this.orderModel.findByIdAndUpdate(id, {
+      status: OrderStatus.cancelled
+    });
+  }
+
+  async createPaymentDataByOrderId(data: PaymentCreatedEvent) {
+    await this.orderModel.findByIdAndUpdate(data.orderId, {
+      payment: {
+        paymentId: data.paymentId,
+        status: data.paymentStatus,
+        amount: data.amount
+      }
+    });
+  }
+
+  async updatePaymentDataByOrderid(data: PaymentUpdatedEvent) {
+    const orderStatus =
+      data.paymentStatus === PaymentStatus.completed
+        ? OrderStatus.confirmed
+        : OrderStatus.cancelled;
+
+    await this.orderModel.findByIdAndUpdate(data.orderId, {
+      status: orderStatus,
+      'payment.status': data.paymentStatus
+    });
   }
 
   async checkIfIdAlreadyExisted(id: string): Promise<boolean> {

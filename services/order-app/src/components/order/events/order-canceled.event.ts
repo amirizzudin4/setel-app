@@ -1,5 +1,5 @@
 import { Data } from 'dataclass';
 
-export class OrderDeletedEvent extends Data {
+export class OrderCanceledEvent extends Data {
   orderId: string;
 }

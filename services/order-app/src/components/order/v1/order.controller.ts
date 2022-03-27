@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderDto } from '../dto/order.dto';
@@ -20,8 +20,8 @@ export class OrderController {
     return this.service.createOrderEvent(createData);
   }
 
-  @Delete(':id')
-  deleteOrder(@Param('id') id: string): Promise<ResponseDto> {
-    return this.service.deleteOrderEvent(id);
+  @Put(':id/cancel')
+  cancelOrder(@Param('id') id: string): Promise<ResponseDto> {
+    return this.service.cancelOrderEvent(id);
   }
 }

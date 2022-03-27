@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PaymentModule } from '../payment/payment.module';
 import { OrderListener } from './listener/order.listener';
 import { Order, OrderSchema } from './schema/order.schema';
-import { OrderController } from './v1/order.controller';
 import { OrderService } from './v1/order.service';
 
 @Module({
@@ -14,10 +14,10 @@ import { OrderService } from './v1/order.service';
         name: 'ORDER_SERVICE',
         transport: Transport.REDIS
       }
-    ])
+    ]),
+    PaymentModule
   ],
-  controllers: [OrderController, OrderListener],
-  providers: [OrderService],
-  exports: [OrderService]
+  controllers: [OrderListener],
+  providers: [OrderService]
 })
 export class OrderModule {}

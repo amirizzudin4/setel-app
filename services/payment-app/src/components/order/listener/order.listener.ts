@@ -9,16 +9,16 @@ export class OrderListener {
   constructor(private service: OrderService) {}
 
   @EventPattern(OrderCreatedEvent.name)
-  handleOrderCreatedEvent(@Payload() data: OrderCreatedEvent) {
+  async handleOrderCreatedEvent(@Payload() data: OrderCreatedEvent) {
     console.log(`on - ${OrderCreatedEvent.name}`);
 
-    this.service.createOrder(data);
+    await this.service.createOrder(data);
   }
 
   @EventPattern(OrderCanceledEvent.name)
-  handleOrderDeletedEvent(@Payload() data: OrderCanceledEvent) {
+  async handleOrderDeletedEvent(@Payload() data: OrderCanceledEvent) {
     console.log(`on - ${OrderCanceledEvent.name}`);
 
-    this.service.cancelOrder(data.orderId);
+    await this.service.cancelOrder(data.orderId);
   }
 }

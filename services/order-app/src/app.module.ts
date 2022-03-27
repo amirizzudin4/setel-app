@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OrderModule } from './components/order/order.module';
+import { PaymentModule } from './components/payment/payment.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -14,13 +15,18 @@ import configuration from './config/configuration';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: `mongodb://localhost:${configService.get(
-          'database.port'
-        )}/${configService.get('database.name')}`
+        uri: `${configService.get('database.url')}/${configService.get(
+          'database.name'
+        )}`,
+        connectionFactory: (connection) => {
+          connection.plugin(require('mongoose-autopopulate'));
+          return connection;
+        }
       }),
       inject: [ConfigService]
     }),
-    OrderModule
+    OrderModule,
+    PaymentModule
   ],
   controllers: [AppController],
   providers: [AppService]

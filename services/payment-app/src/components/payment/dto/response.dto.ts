@@ -2,7 +2,8 @@ export enum ResponseStatus {
   fetch = 'FETCHED',
   create = 'CREATED',
   failed = 'FAILED',
-  canceled = 'CANCELED'
+  canceled = 'CANCELED',
+  completed = 'COMPLETED'
 }
 
 export class ResponseDto {
