@@ -11,6 +11,7 @@ import { Order, OrderDocument } from '../schema/order.schema';
 import { PaymentCreatedEvent } from 'src/components/payment/events/payment-created.event';
 import { PaymentUpdatedEvent } from 'src/components/payment/events/payment-updated.event';
 import { PaymentStatus } from 'src/components/payment/schema/payment-status';
+import { OrderDeliveredEvent } from '../events/order-delivered.event';
 
 @Injectable()
 export class OrderService {
@@ -88,6 +89,22 @@ export class OrderService {
       status: orderStatus,
       'payment.status': data.paymentStatus
     });
+  }
+
+  async deliverAllConfirmedOrderEvent() {
+    this.client.emit(
+      OrderDeliveredEvent.name,
+      OrderDeliveredEvent.create({ orderStatus: OrderStatus.delivered })
+    );
+  }
+
+  async deliverAllConfirmedOrder() {
+    await this.orderModel
+      .updateMany(
+        { status: OrderStatus.confirmed },
+        { status: OrderStatus.delivered }
+      )
+      .exec();
   }
 
   async checkIfIdAlreadyExisted(id: string): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payment, PaymentDocument } from '../schema/payment.schema';
 import { Model, Types } from 'mongoose';
@@ -8,13 +8,17 @@ import { ResponseDto, ResponseStatus } from '../dto/response.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { PaymentUpdatedEvent } from '../events/payment-updated.event';
 import { PaymentCreatedEvent } from '../events/payment-created.event';
+import { OrderService } from 'src/components/order/v1/order.service';
+import { OrderStatus } from 'src/components/order/schema/order-status';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectModel(Payment.name)
     private paymentModel: Model<PaymentDocument>,
-    @Inject('PAYMENT_SERVICE') private client: ClientProxy
+    @Inject('PAYMENT_SERVICE') private client: ClientProxy,
+    @Inject(forwardRef(() => OrderService))
+    private orderService: OrderService
   ) {}
 
   async findByOrderId(orderId: string): Promise<Payment> {
@@ -63,6 +67,13 @@ export class PaymentService {
       { order: data.orderId },
       { status: data.paymentStatus },
       { returnDocument: 'after' }
+    );
+
+    await this.orderService.updateOrderStatus(
+      data.orderId,
+      data.paymentStatus === PaymentStatus.completed
+        ? OrderStatus.confirmed
+        : OrderStatus.cancelled
     );
   }
 

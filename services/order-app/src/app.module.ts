@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OrderModule } from './components/order/order.module';
@@ -25,6 +26,7 @@ import configuration from './config/configuration';
       }),
       inject: [ConfigService]
     }),
+    ScheduleModule.forRoot(),
     OrderModule,
     PaymentModule
   ],

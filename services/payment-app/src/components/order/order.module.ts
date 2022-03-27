@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentModule } from '../payment/payment.module';
@@ -15,9 +15,10 @@ import { OrderService } from './v1/order.service';
         transport: Transport.REDIS
       }
     ]),
-    PaymentModule
+    forwardRef(() => PaymentModule)
   ],
   controllers: [OrderListener],
-  providers: [OrderService]
+  providers: [OrderService],
+  exports: [OrderService]
 })
 export class OrderModule {}

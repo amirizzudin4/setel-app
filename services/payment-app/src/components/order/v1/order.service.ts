@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Order, OrderDocument } from '../schema/order.schema';
 import { Model } from 'mongoose';
@@ -11,6 +11,7 @@ export class OrderService {
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<OrderDocument>,
+    @Inject(forwardRef(() => PaymentService))
     private paymentService: PaymentService
   ) {}
 
@@ -31,5 +32,18 @@ export class OrderService {
     });
 
     await this.paymentService.cancelPaymentbyOrder(id);
+  }
+
+  async updateOrderStatus(id: string, status: OrderStatus) {
+    await this.orderModel.findByIdAndUpdate(id, { status: status });
+  }
+
+  async deliverAllConfirmedOrder() {
+    await this.orderModel
+      .updateMany(
+        { status: OrderStatus.confirmed },
+        { status: OrderStatus.delivered }
+      )
+      .exec();
   }
 }
