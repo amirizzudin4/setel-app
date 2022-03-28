@@ -20,6 +20,7 @@ import configuration from './config/configuration';
           'database.name'
         )}`,
         connectionFactory: (connection) => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           connection.plugin(require('mongoose-autopopulate'));
           return connection;
         }

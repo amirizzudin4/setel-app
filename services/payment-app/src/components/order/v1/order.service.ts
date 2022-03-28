@@ -4,7 +4,7 @@ import { Order, OrderDocument } from '../schema/order.schema';
 import { Model } from 'mongoose';
 import { OrderCreatedEvent } from '../events/order-created.event';
 import { OrderStatus } from '../schema/order-status';
-import { PaymentService } from 'src/components/payment/v1/payment.service';
+import { PaymentService } from '../../payment/v1/payment.service';
 
 @Injectable()
 export class OrderService {

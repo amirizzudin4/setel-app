@@ -2,14 +2,14 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payment, PaymentDocument } from '../schema/payment.schema';
 import { Model, Types } from 'mongoose';
-import { OrderCreatedEvent } from 'src/components/order/events/order-created.event';
+import { OrderCreatedEvent } from '../../order/events/order-created.event';
 import { PaymentStatus } from '../schema/payment-status';
 import { ResponseDto, ResponseStatus } from '../dto/response.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { PaymentUpdatedEvent } from '../events/payment-updated.event';
 import { PaymentCreatedEvent } from '../events/payment-created.event';
-import { OrderService } from 'src/components/order/v1/order.service';
-import { OrderStatus } from 'src/components/order/schema/order-status';
+import { OrderService } from '../../order/v1/order.service';
+import { OrderStatus } from '../../order/schema/order-status';
 
 @Injectable()
 export class PaymentService {
@@ -112,7 +112,7 @@ export class PaymentService {
   }
 
   async checkIfIdAlreadyExisted(id: string): Promise<boolean> {
-    let order = await this.paymentModel.findById(id);
+    const order = await this.paymentModel.findById(id);
     return order !== null;
   }
 }

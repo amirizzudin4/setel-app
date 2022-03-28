@@ -13,6 +13,6 @@ export enum PaymentStatus {
 }
 
 export class OrderPaymentStatus {
-  paymentId: String;
+  paymentId: string;
   status: PaymentStatus;
 }
