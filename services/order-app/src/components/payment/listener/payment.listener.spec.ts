@@ -1,18 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { PaymentService } from '../v1/payment.service';
 import { PaymentListener } from './payment.listener';
 
 describe('PaymentListener', () => {
-  let controller: PaymentListener;
+  let listener: PaymentListener;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PaymentListener]
+      controllers: [PaymentListener],
+      providers: [{ provide: PaymentService, useValue: {} }]
     }).compile();
 
-    controller = module.get<PaymentListener>(PaymentListener);
+    listener = module.get<PaymentListener>(PaymentListener);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(listener).toBeDefined();
   });
 });

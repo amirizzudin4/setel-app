@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderService } from 'src/components/order/v1/order.service';
+import { OrderService } from '../../order/v1/order.service';
 import { PaymentCreatedEvent } from '../events/payment-created.event';
 import { PaymentUpdatedEvent } from '../events/payment-updated.event';
 

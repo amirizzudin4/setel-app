@@ -8,9 +8,9 @@ import { OrderCreatedEvent } from '../events/order-created.event';
 import { OrderCanceledEvent } from '../events/order-canceled.event';
 import { OrderStatus } from '../schema/order-status';
 import { Order, OrderDocument } from '../schema/order.schema';
-import { PaymentCreatedEvent } from 'src/components/payment/events/payment-created.event';
-import { PaymentUpdatedEvent } from 'src/components/payment/events/payment-updated.event';
-import { PaymentStatus } from 'src/components/payment/schema/payment-status';
+import { PaymentCreatedEvent } from '../../payment/events/payment-created.event';
+import { PaymentUpdatedEvent } from '../../payment/events/payment-updated.event';
+import { PaymentStatus } from '../../payment/schema/payment-status';
 import { OrderDeliveredEvent } from '../events/order-delivered.event';
 
 @Injectable()
@@ -108,7 +108,7 @@ export class OrderService {
   }
 
   async checkIfIdAlreadyExisted(id: string): Promise<boolean> {
-    let order = await this.orderModel.findById(id);
+    const order = await this.orderModel.findById(id);
     return order !== null;
   }
 }

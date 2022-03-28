@@ -1,7 +1,7 @@
 import { OrderPaymentStatus, OrderStatus } from '../schema/order-status';
 
 export class OrderDto {
-  _id?: String;
+  _id?: string;
   product: string;
   amount: number;
   status: OrderStatus;
