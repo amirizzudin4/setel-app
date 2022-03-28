@@ -13,7 +13,12 @@ import { OrderModule } from '../order/order.module';
     ClientsModule.register([
       {
         name: 'PAYMENT_SERVICE',
-        transport: Transport.REDIS
+        transport: Transport.REDIS,
+        options: {
+          url: process.env.REDIS_URL,
+          retryAttempts: 20,
+          retryDelay: 3000
+        }
       }
     ]),
     forwardRef(() => OrderModule)

@@ -12,7 +12,9 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.REDIS,
     options: {
-      url: configService.get('redis.url')
+      url: configService.get('redis.url'),
+      retryAttempts: 20,
+      retryDelay: 3000
     }
   });
 
