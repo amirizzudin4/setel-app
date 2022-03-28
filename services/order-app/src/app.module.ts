@@ -11,6 +11,7 @@ import configuration from './config/configuration';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: ['.env.local', '.env'],
       load: [configuration]
     }),
     MongooseModule.forRootAsync({
