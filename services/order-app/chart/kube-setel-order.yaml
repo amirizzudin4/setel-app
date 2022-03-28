@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: setel-order
+  namespace: setel
+spec:
+  selector:
+    app: setel-order
+  ports:
+    - port: 3000
+      targetPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: setel-order
+  namespace: setel
+spec:
+  selector:
+    matchLabels:
+      app: setel-order
+  template:
+    metadata:
+      labels:
+        app: setel-order
+    spec:
+      containers:
+        - name: setel-order
+          image: setel-order:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              value: mongodb://mongo:27017
+            - name: REDIS_URL
+              value: redis://redis:6379
